@@ -1,40 +1,40 @@
 <template>
   <div class="content-container">
-    <p>This is where you can retrieve user posts</p>
-    <br>
-    <br>
-    <h3>Most recent Post:</h3>
-    <br>
-    <table id="posts-table">
+      <h1>List of Posts</h1>
+      <br>
+  <table id="posts-table">
       <!-- Table Header Row -->
       <tr>
-        <th>UserId</th>
+        <th>userId</th>
         <th>Title</th>
         <th>Body</th>
       </tr>
       <!-- Table Elements (Rows) -->
-      <tr v-for="post in allPosts" :key="post.id">
-        <td>{{allPosts.userId }}</td>
-        <td>{{ allPosts.title }}</td>
-        <td>{{ allPosts.body }}</td>
+      <tr v-for="post in posts" :key="post.id">
+        <td @click="showPost">{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.body }}</td>
       </tr>
     </table>
-    <br>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ListPosts'
+  name: 'Posts',
+  props: {
+    posts: Array
+  },
+  methods: {
+    showPost (value) {
+      console.log('showing a post for ', value)
+    }
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-p {
-  width: 70%;
-}
-
 td, th {
   border: 1px solid #ddd;
   padding: 8px;

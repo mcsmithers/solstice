@@ -1,22 +1,63 @@
 <template>
   <div class="content-container">
-    <app-banner></app-banner>
-    <!-- <app-list-posts></app-list-posts> -->
+<app-banner v-bind:bannerMessage="messageToDisplay" v-bind:bannerType="messageType" v-on:clear-banner="clearMessage"></app-banner>
+<app-posts v-bind:posts="posts"></app-posts>
   </div>
 </template>
 
 <script>
-// import ListPosts from './ListPosts'
+import Posts from './Posts.vue'
 import Banner from './Banner.vue'
+import axios from 'axios'
 
 export default {
   name: 'Content',
   components: {
-    // 'app-list-posts': ListPosts,
+    'app-posts': Posts,
     'app-banner': Banner
   },
+  data () {
+    return {
+      posts: [],
+      messageToDisplay: '',
+      messageType: 'Info'
+    }
+  },
   created () {
-    this.$store.dispatch('retrieveAllPosts')
+  // GET request for user data
+    axios.get('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => {
+      // handle success
+        this.messageType = 'Success'
+        this.messageToDisplay = 'SUCCESS! Loaded posts data! Hooray!'
+
+        // Add the 'editing' field to each user object
+        var mountedPosts = response.data.map(function (post) {
+          post.editing = false
+          return post
+        })
+        this.posts = mountedPosts
+
+        console.log('Posts array in success callback:')
+        console.log(this.posts)
+      })
+      .catch((error) => {
+      // handle error
+        console.log(error)
+        this.errorMessage = 'Error! Unable to load Posts data!'
+        this.messageType = 'Error'
+        this.messageToDisplay = 'ERROR! Unable to load user data!  Oh no!'
+      })
+      .finally((response) => {
+      // always executed
+        console.log('Finished!')
+      })
+  },
+  methods: {
+    clearMessage: function () {
+      this.messageToDisplay = ''
+      this.messageType = 'Info'
+    }
   }
 }
 </script>
