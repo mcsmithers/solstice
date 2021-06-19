@@ -1,0 +1,83 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+import axios from 'axios'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {
+  // Message to display on banner
+    bannerMessage: '',
+    // Types: Error, Info, or Success
+    bannerType: 'Info',
+    allPosts: []
+  },
+  getters: {
+    getBannerMessage: (state) => {
+      return state.bannerMessage
+    },
+    getBannerType: (state) => {
+      return state.bannerType
+    },
+    getALlPostsData: (state) => {
+      return state.allPosts
+    }
+  },
+  mutations: {
+    setBannerMessage: (state, payload) => {
+      state.bannerMessage = payload
+    },
+    setBannerType: (state, payload) => {
+      state.bannerType = payload
+    }
+  },
+  actions: {
+    setBanner: (context, payload) => {
+      context.commit('setBannerMessage', payload.message)
+      context.commit('setBannerType', payload.type)
+    },
+    retrieveAllPosts: (context) => {
+      // GET request for all post data
+      axios.get('https://jsonplaceholder.typicode.com/posts')
+        .then((response) => {
+        // handle success
+          const respData = response.data
+          context.commit('setBannerMessage', 'Success')
+          context.commit('setBannerType', 'SUCCESS! Loaded all posts!')
+
+          // Breaking up the data to be in a data structure a little easier to work with
+          const posts = Object.keys(respData)
+
+          // Pick out our data from the first post
+          const postHolder = []
+          postHolder.userId = posts[0]
+          postHolder.id = posts[0]
+          postHolder.title = posts[0]
+          postHolder.body = posts[0]
+          // console.log(postHolder)
+
+          // Put the cleaned up data in to an object into the array
+          const postObj = Object.assign({}, postHolder)
+          // console.log(postObj)
+          const allPosts = []
+          allPosts.push(postObj)
+          // console.log(allPosts)
+
+          // Now with the data in a usable form, we can sent it to the context
+          context.commit('setPostsData', allPosts)
+        })
+        .catch((error) => {
+          // handle error
+          context.commit('setBannerMessage', 'ERROR! Unable to load posts data!')
+          context.commit('setBannerType', 'Error')
+          console.log(error.message)
+        })
+        .finally((response) => {
+          // always executed
+          console.log('Finished fetching all posts!')
+        })
+    }
+  },
+  modules: {
+  }
+})
