@@ -4,7 +4,7 @@
       <br>
       <div>
           <h3>Post</h3>
-            <h4>{{detail.title}}</h4>
+            <!-- <h4>{{details.title}}</h4> -->
             <!-- <p>{{details.userId}}</p>
             <p>{{details.body}}</p> -->
           <br/>

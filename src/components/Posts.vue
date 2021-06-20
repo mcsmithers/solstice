@@ -5,15 +5,17 @@
     <table id="posts-table">
       <!-- Table Header Row -->
       <tr>
-        <th>userId</th>
+        <th>Id</th>
+        <th>User Id</th>
         <th>Title</th>
         <th>Body</th>
       </tr>
       <!-- Table Elements (Rows) -->
       <tr v-for="post in posts" :key="post.id">
         <td>{{ post.id }}</td>
-        <td @click="showPost(post)" v-bind:details="details">
-          <router-link to="/details">{{ post.title }}</router-link>
+        <td> {{ post.userId }} </td>
+        <td>
+          <router-link to="/details" v-on:click="save">{{ post.title }}</router-link>
         </td>
         <td>{{ post.body }}</td>
       </tr>
@@ -22,22 +24,20 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'Posts',
   props: {
     posts: Array
   },
+  computed: {
+    ...mapState(['details'])
+  },
   methods: {
-    showPost (post) {
-      console.log(post)
-      const detail = {
-        id: post.id,
-        userId: post.userId,
-        title: post.title,
-        body: post.body
-      }
-      console.log(detail)
+    ...mapMutations(['setDetails']),
+    save () {
+      this.$store.dispatch('retrieveDetailData')
     }
   }
 }

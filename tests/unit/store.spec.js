@@ -38,7 +38,8 @@ describe('Vuex Store Test', () => {
     // Call the mutations
     store.dispatch('setBanner', {
       message: 'It worked!',
-      type: 'Success' }
+      type: 'Success'
+    }
     )
 
     // Test the results
